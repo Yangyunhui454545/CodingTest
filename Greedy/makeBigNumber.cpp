@@ -8,6 +8,14 @@
 using namespace std;
 string number;
 int k;
+
+/////////////////////////////////////////////////////
+/*
+시간 초과로 개고생함 시발
+substr 대신 erase로 고치고 시간초과 극복
+그리고 이차원이 아닌 일차원 for문으로 어떻게든 뜯어고침,,,
+*/
+/////////////////////////////////////////////////////
 string solution(string number, int k) {
     string tmp = number;        
     int minIdx = 0;
