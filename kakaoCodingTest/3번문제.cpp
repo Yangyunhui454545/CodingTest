@@ -4,69 +4,69 @@
 #include<string>
 #include<queue>
 using namespace std;
-int direct[4][2] = { 1,0,0,1,-1,0,0,-1 };//¹Ù·Î ¿·
-int direct2[4][2] = { 2, 0, 0, 2, -2, 0, 0, -2 }; //¿·¿·
-//¸ÂÀ¸¸é 1, Æ²¸®¸é 0 return
-bool flag = true;
-bool check(int index, int y, int x, vector<string> place) {
-    for (int i = 0; i < 4; i++) {
-        int ny = y + direct[i][0];
-        int nx = x + direct[i][1];
-        int dy = y + direct2[i][0];
-        int dx = x + direct2[i][1];
-        if (ny > 4 || ny < 0 || nx>4 || nx < 0)continue;
-        if (place[ny][nx] == 'P') {
-            return false;
-        }
-        if (dy > 4 || dy < 0 || dx>4 || dx < 0)continue;
-        if (place[ny][nx] != 'X' && place[dy][dx] == 'P') {
-            return false;
-        }
-    }
-
-    if (y - 1 >= 0 && x - 1 >= 0) { //¿ÞÀ§
-        if (place[y - 1][x - 1] == 'P')
-            if (place[y - 1][x] != 'X' || place[y][x - 1] != 'X')return false;
-    }
-    if (y - 1 >= 0 && x + 1 <= 4) { //¿Þ¿À
-        if (place[y - 1][x + 1] == 'P')
-            if (place[y - 1][x] != 'X' || place[y][x + 1] != 'X')return false;
-    }
-    if (y + 1 <= 4 && x - 1 >= 0) {//¿Þ¾Æ·¡
-        if (place[y + 1][x - 1] == 'P')
-            if (place[y][x - 1] != 'X' || place[y + 1][x] != 'X')return false;
-    }
-    if (y + 1 <= 4 && x + 1 <= 4) {//¿Þ¿À¸¥
-        if (place[y + 1][x + 1] == 'P')
-            if (place[y + 1][x] != 'X' || place[y][x + 1] != 'X')return false;
-    }
-    return true;
-}
-vector<int> solution(vector<vector<string>> places) {
-    vector<int> answer;
-    int size = -1;
-    while (size++ < 4) {
-        flag = true;
-        for (int i = 0; i < 5; i++) {
-            if (!flag)break;
-            for (int j = 0; j < 5; j++) {
-                if (places[size][i][j] == 'P') {
-                    flag = check(size, i, j, places[size]);
-                    if (!flag) break;
+//ì§€ê¸ˆ ì¸ë±ìŠ¤ - k, ëë‚œ ì¸ë±ìŠ¤ , ì‚­ì œí•œ ì¸ë±ìŠ¤ ì €ìž¥í•˜ëŠ” vector
+string solution(int n, int k, vector<string> cmd) {
+    string answer = "";
+    int last = n - 1, tmp=0;
+    int arr[1000001] = { 0 };
+    vector<int> deleted;
+    for (int i = 0; i < cmd.size(); i++) {
+        if (cmd[i][0] == 'D') {
+            for (int j = k; j < n; j++) {
+                if (arr[j] == 0) {
+                    tmp++;
+                }
+                if (tmp == cmd[i][2]) {
+                    k = j;
+                    break;
                 }
             }
         }
-        if (flag)answer.push_back(1);
-        else answer.push_back(0);
+        else if (cmd[i][0] == 'U') {
+            for (int j = k; j > 0; j--) {
+                if (arr[j] == 0) {
+                    tmp++;
+                }
+                if (tmp == cmd[i][2]) {
+                    k = j;
+                    break;
+                }
+            }
+        }
+        else if (cmd[i][0] == 'C') {
+            deleted.push_back(k);
+            arr[k] = 1;
+            int j = 1 + 1;
+            for (j = i + 1; j < n; j++) {
+                if (arr[j] == 0) {
+                    k = j;
+                    break;
+                }
+            }
+            if (j == n) {
+                for (j = i - 1; j >= 0; j--) {
+                    if (arr[j] == 0) {
+                        k = j;
+                        break;
+                    }
+                }
+            }
+        }
+        else if (cmd[i][0] == 'Z') {
+            int get = deleted.back();
+            arr[get] = 0;
+            deleted.pop_back();
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == 0)answer += 'O';
+        else 'X';
     }
     return answer;
 }
+
 int main(void) {
-    solution({
-        {"POOOP", "OXXOX", "OPXPX", "OOXOX", "POXXP"},
-        {"POOPX", "OXPXP", "PXXXO", "OXXXO", "OOOPP"},
-        {"PXOPX", "OXOXP", "OXPXX", "OXXXP", "POOXX"},
-        {"OOOXX", "XOOOX", "OOOXX", "OXOOX", "OOOOO"},
-        {"PXPXP", "XPXPX", "PXPXP", "XPXPX", "PXPXP"}
-        });
+    cout<< solution(8, 2, { "D 2","C","U 3","C","D 4","C","U 2","Z","Z" })<<endl;
+    cout << solution(8, 2, { "D 2","C","U 3","C","D 4","C","U 2","Z","Z","U 1","C" }) << endl;
+
 }
