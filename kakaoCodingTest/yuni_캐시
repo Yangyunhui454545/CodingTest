@@ -1,0 +1,56 @@
+#include <string>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+using namespace std;
+/*
+도시 이름을 검색해면 해당 도시와 과녈ㄴ된 맛집 게시물들을 db에서 읽어 보여주는 서비스
+캐시 사이즈 정하기
+LRU - Least Recently used
+
+*/
+
+unordered_map<string, int> uno;
+vector<pair<string, int>> v;
+
+int solution(int cacheSize, vector<string> cities) {
+    int answer = 0;
+    int tt = 0;
+    if (cacheSize == 0)return 5 * cities.size();
+    answer += 5;
+    for (int i = 0; i < cities[0].size(); i++) if (cities[0][i] > 90) cities[0][i] -= 32;
+
+    uno[cities[0]] = 1;
+    v.push_back({ cities[0], tt++ });
+
+    for (int i = 1; i < cities.size(); i++) {
+        for (int j = 0; j < cities[i].size(); j++) {
+            if (cities[i][j] > 90) cities[i][j] -= 32;
+        }
+        if (uno[cities[i]] == 1) {
+            for (int j = 0; j < v.size(); j++) {
+                if (v[j].first == cities[i]) {
+                    v.erase(v.begin() + j);
+                    break;
+                }
+            }
+            v.push_back({ cities[i], tt++ });
+            answer++;
+        }
+        else if (v.size() < cacheSize) {
+            v.push_back({ cities[i],tt++ });
+            answer += 5;
+            uno[cities[i]] = 1;
+        }
+        else {
+            uno[v[0].first] = 0;
+            v.erase(v.begin());
+            v.push_back({ cities[i],tt++ });
+            uno[cities[i]] = 1;
+            answer += 5;
+        }
+    }
+    return answer;
+}
+int main(void) { solution(3, { "Jeju", "Pangyo", "Seoul", "Jeju", "Pangyo", "Seoul", "Jeju", "Pangyo", "Seoul" });
+}
