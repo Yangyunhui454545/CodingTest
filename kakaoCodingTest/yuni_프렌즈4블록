@@ -1,0 +1,75 @@
+#include <string>
+#include <vector>
+#include <string.h>
+
+using namespace std;
+int direct[3][2] = { 0,1,1,1,1,0 };
+vector<string> v;
+string arr[100];
+
+bool find(int y, int x, char ch) {
+    int cnt = 0;
+    for (int l = 0; l < 3; l++) {
+        int yy = y + direct[l][0];
+        int xx = x + direct[l][1];
+        if (yy >= v.size() || xx >= v[yy].size())continue;
+        if (v[yy][xx] != ch) return false;
+        else cnt++;
+    } 
+    if (cnt == 3) return true;
+    else return false;
+}
+vector<pair<int, int>> vv;
+int visit[100][100];
+int solution(int m, int n, vector<string> board) {
+    int answer = 0;
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            arr[i] += board[m - j - 1][i];
+        }
+    }
+    for (int i = 0; i < n; i++)v.push_back(arr[i]);
+    board = v;
+    vv.push_back({ 0,0 });
+    while (!vv.empty()) {
+        for (int i = 0; i < n - 1; i++) {
+            if (board[i].size() == 0)
+                continue;           
+            for (int j = 0; j < board[i].size()-1; j++) {
+                if (board[i][j] == '0')continue;
+                if (find(i, j, board[i][j])) vv.push_back(make_pair(i,j));
+            }
+        }
+        if (vv.size() == 1) {
+            break;
+        }
+        else if (vv.size() > 1) {
+            for(int l = vv.size()-1; l > 0; l--){
+                int y = vv[l].first;
+                int x = vv[l].second;
+                visit[y][x] = 1;
+                for (int l = 0; l < 3; l++) {
+                    visit[y + direct[l][0]][x + direct[l][1]] = 1;
+                }
+                vv.pop_back();
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = board[i].size() - 1; j >= 0; j--) {
+                if (visit[i][j] == 1) {
+                    board[i].erase(j, 1);
+                    answer++;
+                }
+            }
+        }
+        memset(visit, 0, sizeof(visit));
+        v = board;
+    }
+    return answer;
+}
+
+int main(void) {
+//    solution(4,5,{"CCBDE", "AAADE", "AAABF","CCBBF"});
+    solution(6, 6, { "TTTANT", "RRFACC", "RRRFCC", "TRRRAA", "TTMMMF","TMMTTJ" });
+}
