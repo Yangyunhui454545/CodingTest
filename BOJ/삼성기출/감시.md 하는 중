@@ -65,10 +65,13 @@ class Main {
                         count += cctv2(dir, y, x, visit);
                         break;
                     case 3:
+                        count += cctv3(dir, y, x, visit);
                         break;
                     case 4:
+                        count += cctv4(dir, y, x, visit);
                         break;
                     case 5:
+                        count += cctv5(dir, y, x, visit);
                         break;
                 }
                 if (sagac - count < answer) {
@@ -189,14 +192,223 @@ class Main {
         int cnt = 0;
         switch (dir) {
             case 1:
+                //위
+                for (int i = y; i >= 0; i--) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                //오른
+                for (int i = x + 1; x < N; i++) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
                 break;
             case 2:
+                //위
+                for (int i = y; i >= 0; i--) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                //왼
+                for (int i = x - 1; i >= 0; i--) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
                 break;
             case 3:
+                //아래
+                for (int i = y; i < N; i++) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                //왼
+                for (int i = x - 1; i >= 0; i--) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
                 break;
             case 4:
+                //아래
+                for (int i = y; i < N; i++) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                //오른
+                for (int i = x + 1; x < N; i++) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
                 break;
 
+        }
+        return cnt;
+    }
+
+    public int cctv4(int dir, int y, int x, int[][] visit) {
+        int cnt = 0;
+        switch (dir) {
+            case 1:
+                //위
+                for (int i = y; i >= 0; i--) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                //오른
+                for (int i = x + 1; x < N; i++) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                //왼
+                for (int i = x - 1; i >= 0; i--) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                break;
+            case 2:
+                //위
+                for (int i = y; i >= 0; i--) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                //왼
+                for (int i = x - 1; i >= 0; i--) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                //아래
+                for (int i = y + 1; i < N; i++) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                break;
+            case 3:
+                //아래
+                for (int i = y; i < N; i++) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                //왼
+                for (int i = x - 1; i >= 0; i--) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                //오른
+                for (int i = x + 1; x < N; i++) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                break;
+            case 4:
+                //아래
+                for (int i = y; i < N; i++) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                //오른
+                for (int i = x + 1; x < N; i++) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                //위
+                for (int i = y - 1; i >= 0; i--) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                break;
+
+        }
+        return cnt;
+    }
+
+    public int cctv5(int dir, int y, int x, int[][] visit) {
+        int cnt = 0;
+        for (int i = y; i >= 0; i--) {
+            if (room[i][x] == 6) break;
+            if (visit[i][x] == 0) {
+                visit[i][x] = 1;
+                cnt++;
+            }
+        }
+        for (int i = x - 1; i >= 0; i--) {
+            if (room[y][i] == 6) break;
+            if (visit[y][i] == 0) {
+                visit[y][i] = 1;
+                cnt++;
+            }
+        }
+        for (int i = y + 1; i < N; i++) {
+            if (room[i][x] == 6) break;
+            if (visit[i][x] == 0) {
+                visit[i][x] = 1;
+                cnt++;
+            }
+        }
+        for (int i = x + 1; i < N; i++) {
+            if (room[y][i] == 6) break;
+            if (visit[y][i] == 0) {
+                visit[y][i] = 1;
+                cnt++;
+            }
         }
         return cnt;
     }
