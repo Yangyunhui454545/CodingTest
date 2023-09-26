@@ -1,0 +1,217 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+class Main {
+    // N x M k개의 cctv
+    // 감시 방향의 칸 전체를 감시할 수 있다.
+    // 회전은 90도 방향으로
+    // 0 은 빈칸 6은 벽 1~5는 cctv
+
+    static int N;
+    static int M;
+    static int[][] room;
+    static List<CCTV> cctvs = new ArrayList<>();
+    static int answer = Integer.MAX_VALUE;
+    static int sagac;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stringTokenizer = new StringTokenizer(bufferedReader.readLine());
+        N = Integer.parseInt(stringTokenizer.nextToken());
+        M = Integer.parseInt(stringTokenizer.nextToken());
+
+        room = new int[N + 1][M + 1];
+        sagac = N * M;
+        for (int i = 0; i < N; i++) {
+            stringTokenizer = new StringTokenizer(bufferedReader.readLine());
+            for (int j = 0; j < M; j++) {
+                room[i][j] = Integer.parseInt(stringTokenizer.nextToken());
+                if (1 <= room[i][j] && room[i][j] <= 5) {
+                    cctvs.add(new CCTV(i, j, room[i][j], 0));
+                    sagac--;
+                }
+                if (room[i][j] == 6) sagac--;
+            }
+        }
+        new Main().dfs(0);
+
+        System.out.print(answer);
+    }
+
+    // 1 - 북서남동
+    // 2 - 가로 세로
+    // 3 - 위오른 위왼 아래왼 아래오른
+    // 4 - 위 왼 아래 오른
+    // 5 - 하나
+    public void dfs(int depth) {
+        if (depth == cctvs.size()) {
+
+            for (int i = 0; i < cctvs.size(); i++) {
+                int[][] visit = new int[N + 1][M + 1];
+                int y = cctvs.get(i).y;
+                int x = cctvs.get(i).x;
+                int type = cctvs.get(i).cctv;
+                int dir = cctvs.get(i).dir;
+                int count = 0;
+                switch (type) {
+                    case 1:
+                        count += cctv1(dir, y, x, visit);
+                        break;
+                    case 2:
+                        count += cctv2(dir, y, x, visit);
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                }
+                if (sagac - count < answer) {
+                    answer = sagac - count;
+                }
+            }
+            return;
+        }
+        switch (cctvs.get(depth).cctv) {
+            case 1, 3, 4:
+                for (int i = 0; i < 4; i++) {
+                    cctvs.get(depth).dir = i;
+                    dfs(depth + 1);
+                }
+                break;
+            case 2:
+                for (int i = 0; i < 2; i++) {
+                    cctvs.get(depth).dir = i;
+                    dfs(depth + 1);
+                }
+                break;
+            default:
+                dfs(depth + 1);
+        }
+    }
+
+    // 1 - 북서남동
+    public int cctv1(int dir, int y, int x, int[][] visit) {
+        int cnt = 0;
+        switch (dir) {
+            case 1:
+                for (int i = y; i >= 0; i--) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                break;
+            case 2:
+                for (int i = x; i >= 0; i--) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                break;
+            case 3:
+                for (int i = y; i < N; i++) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                break;
+            case 4:
+                for (int i = x; i < N; i++) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                break;
+        }
+        return cnt;
+    }
+
+    // 2 - 가로 세로
+    public int cctv2(int dir, int y, int x, int[][] visit) {
+        int cnt = 0;
+        switch (dir) {
+            case 1:
+                //왼쪽
+                for (int i = x; x >= 0; i--) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                //오른쪽
+                for (int i = x + 1; x < N; i++) {
+                    if (room[y][i] == 6) break;
+                    if (visit[y][i] == 0) {
+                        visit[y][i] = 1;
+                        cnt++;
+                    }
+                }
+                break;
+            case 2:
+                // 위쪽
+                for (int i = y; i >= 0; i--) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+                // 아래쪽
+                for (int i = y + 1; i < 0; i++) {
+                    if (room[i][x] == 6) break;
+                    if (visit[i][x] == 0) {
+                        visit[i][x] = 1;
+                        cnt++;
+                    }
+                }
+
+                break;
+        }
+        return cnt;
+    }
+
+    // 3 - 위오른 위왼 아래왼 아래오른
+    public int cctv3(int dir, int y, int x, int[][] visit) {
+        int cnt = 0;
+        switch (dir) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+
+        }
+        return cnt;
+    }
+}
+
+class CCTV {
+    int y;
+    int x;
+    int cctv;
+    int dir;
+
+    public CCTV(int y, int x, int cctv, int dir) {
+        this.y = y;
+        this.x = x;
+        this.cctv = cctv;
+        this.dir = dir;
+    }
+}
